@@ -30,98 +30,49 @@ extension Realm {
      ```swift
      let realm: Realm?
      do {
-         realm = Realm()
+         realm = try Realm()
      } catch Realm.Error.incompatibleLockFile {
          print("Realm Browser app may be attached to Realm on device?")
      }
      ```
     */
     public struct Error {
-        // swiftlint:disable:next nesting
-        public enum Code: Int {
-            /// - see: `Realm.Error.fail`
-            case fail
-
-            /// - see: `Realm.Error.fileAccess`
-            case fileAccess
-
-            /// - see: `Realm.Error.filePermissionDenied`
-            case filePermissionDenied
-
-            /// - see: `Realm.Error.fileExists`
-            case fileExists
-
-            /// - see: `Realm.Error.fileNotFound`
-            case fileNotFound
-
-            /// - see: `Realm.Error.incompatibleLockFile`
-            case incompatibleLockFile
-
-            /// - see: `Realm.Error.fileFormatUpgradeRequired`
-            case fileFormatUpgradeRequired
-
-            /// - see: `Realm.Error.addressSpaceExhausted`
-            case addressSpaceExhausted
-
-            /// - see: `Realm.Error.schemaMismatch`
-            case schemaMismatch
-        }
-
         /// Error thrown by Realm if no other specific error is returned when a realm is opened.
-        public static let fail: Code = .fail
+        public static let fail = RLMError.fail
 
         /// Error thrown by Realm for any I/O related exception scenarios when a realm is opened.
-        public static let fileAccess: Code = .fileAccess
+        public static let fileAccess = RLMError.fileAccess
 
         /// Error thrown by Realm if the user does not have permission to open or create
         /// the specified file in the specified access mode when the realm is opened.
-        public static let filePermissionDenied: Code = .filePermissionDenied
+        public static let filePermissionDenied = RLMError.filePermissionDenied
 
         /// Error thrown by Realm if the file already exists when a copy should be written.
-        public static let fileExists: Code = .fileExists
+        public static let fileExists = RLMError.fileExists
 
         /// Error thrown by Realm if no file was found when a realm was opened as
         /// read-only or if the directory part of the specified path was not found
         /// when a copy should be written.
-        public static let fileNotFound: Code = .fileNotFound
+        public static let fileNotFound = RLMError.fileNotFound
 
         /// Error thrown by Realm if the database file is currently open in another process which
         /// cannot share with the current process due to an architecture mismatch.
-        public static let incompatibleLockFile: Code = .incompatibleLockFile
+        public static let incompatibleLockFile = RLMError.incompatibleLockFile
 
         /// Error thrown by Realm if a file format upgrade is required to open the file,
         /// but upgrades were explicitly disabled.
-        public static let fileFormatUpgradeRequired: Code = .fileFormatUpgradeRequired
+        public static let fileFormatUpgradeRequired = RLMError.fileFormatUpgradeRequired
 
         /// Error thrown by Realm if there is insufficient available address space.
-        public static let addressSpaceExhausted: Code = .addressSpaceExhausted
+        public static let addressSpaceExhausted = RLMError.addressSpaceExhausted
 
         /// Error thrown by Realm if there is a schema version mismatch, so that a migration is required.
-        public static let schemaMismatch: Code = .schemaMismatch
+        public static let schemaMismatch = RLMError.schemaMismatch
 
         /// :nodoc:
-        public var code: Code {
+        public var code: RLMError.Code {
             let rlmError = _nsError as! RLMError
-            switch rlmError.code {
-            case .fail:
-                return .fail
-            case .fileAccess:
-                return .fileAccess
-            case .filePermissionDenied:
-                return .filePermissionDenied
-            case .fileExists:
-                return .fileExists
-            case .fileNotFound:
-                return .fileNotFound
-            case .incompatibleLockFile:
-                return .incompatibleLockFile
-            case .fileFormatUpgradeRequired:
-                return .fileFormatUpgradeRequired
-            case .addressSpaceExhausted:
-                return .addressSpaceExhausted
-            case .schemaMismatch:
-                return .schemaMismatch
-            }
+            return rlmError.code
         }
 
         /// :nodoc:
@@ -139,12 +90,6 @@ extension Realm {
 extension Realm.Error: _BridgedStoredNSError {
     /// :nodoc:
     public static var _nsErrorDomain = RLMErrorDomain // swiftlint:disable:this variable_name
-}
-
-/// :nodoc:
-extension Realm.Error.Code: _ErrorCodeProtocol {
-    /// :nodoc:
-    public typealias _ErrorType = RLMError // swiftlint:disable:this type_name
 }
 
 // MARK: Equatable
